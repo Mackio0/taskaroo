@@ -23,13 +23,21 @@ export const createTask = async (req, res, next) => {
     console.log(savedTask);
     return res.status(201).json(savedTask);
   } catch (error) {
-    console.error('Error creating task: ' + error)
+    console.error('Error creating task: ' + error);
     next(useErrorHandler(error.message, 500));
   }
 };
 
-export const getTasks = (req, res, next) => {
-  return res.status(200).json({ msg: 'getTasks' });
+export const getTasks = async (req, res, next) => {
+  const { id } = req.user;
+  try {
+    const tasks = await Task.find({ user: id });
+    return res.status(200).json(tasks);
+  } catch (error) {
+    console.error(`Error fetching tasks: ${error}`);
+    next(useErrorHandler(error.message, 500));
+  }
+  
 };
 
 export const getTask = (req, res, next) => {
