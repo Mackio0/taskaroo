@@ -9,6 +9,7 @@ import {
 import ensureAuth from '../middlewares/ensureAuth.mjs';
 import { body, checkSchema } from 'express-validator';
 import { createTaskValidationSchema } from '../utils/validationSchemas.mjs';
+import ensureTaskOwnership from '../middlewares/ensureTaskOwnership.mjs';
 
 const router = Router();
 
@@ -18,9 +19,9 @@ router.post(
   checkSchema(createTaskValidationSchema),
   createTask
 );
-router.get('/api/tasks', getTasks);
-router.get('/api/tasks/:id', getTask);
-router.put('/api/tasks/:id', updateTask);
-router.delete('/api/tasks/:id', deleteTask);
+router.get('/api/tasks', ensureAuth, getTasks);
+router.get('/api/tasks/:id', ensureAuth, ensureTaskOwnership, getTask);
+router.put('/api/tasks/:id', ensureAuth, ensureTaskOwnership, updateTask);
+router.delete('/api/tasks/:id', ensureAuth, ensureTaskOwnership, deleteTask);
 
 export default router;

@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 mongoose
-  .connect('mongodb://localhost/todo-mern')
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to mongoDB'))
   .catch((error) => console.log(error));
 
