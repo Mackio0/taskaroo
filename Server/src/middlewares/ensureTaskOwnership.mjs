@@ -3,28 +3,29 @@ import { useErrorHandler } from '../utils/helpers.mjs';
 
 const ensureTaskOwnership = async (req, res, next) => {
   try {
-    const taskId = req.params.id;
-    const userId = req.user.id;
-    // console.log('taskId -' + taskId + '\n' + 'userId -' + userId);
+    const { id: taskId } = req.params;
+    const { id: userId } = req.user;
 
     const task = await Task.findById(taskId);
     if (!task) {
-      return res.status(404).json({ msg: 'Task not found' });
+      return next(useErrorHandler('Task not found', 404));
     }
 
     if (task.user.toString() !== userId.toString()) {
-      return res.status(401).json({ msg: 'Unauthorized' });
+      return next(useErrorHandler('Unauthorized', 401));
     }
-    return next();
+
+    next();
   } catch (error) {
     if (error.name === 'CastError') {
-      return res.status(400).json({ msg: 'Invalid task ID' });
+      return next(useErrorHandler('Invalid task ID', 400));
     }
-    next(useErrorHandler(error, 500));
+    next(useErrorHandler(error.message, 500));
   }
 };
 
 export default ensureTaskOwnership;
+
 
 // if (taskId && userId) {
 //     Task.findById(taskId)
