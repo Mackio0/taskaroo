@@ -7,7 +7,7 @@ export const loginController = (req, res, next) => {
 };
 
 export const authStatusController = (req, res, next) => {
-  console.log(req.isAuthenticated());
+  // console.log(req.isAuthenticated());
   return req.user
     ? res.status(200).json(req.user)
     : res.status(401).json({ msg: 'User is not authenticated' });

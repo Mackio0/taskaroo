@@ -1,9 +1,16 @@
 import bcrypt from 'bcrypt';
 
-export const useErrorHandler = (errMsg, statusCode) => {
-  const error = new Error(errMsg);
-  error.status = statusCode;
-  return error;
+export const useErrorHandler = (err, statusCode) => {
+  if (typeof err === 'string') {
+    const errObj = new Error(err);
+    errObj.status = statusCode;
+    return errObj;
+  }
+
+  if (!err.status && statusCode) {
+    err.status = statusCode;
+  }
+  return err;
 };
 
 const saltRounds = 10;
